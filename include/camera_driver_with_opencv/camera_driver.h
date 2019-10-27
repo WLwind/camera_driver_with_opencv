@@ -36,6 +36,7 @@ private:
 
   int camera_index{0};
   int fps{30};
+  bool upside_down{false};//whether your camera is set upside down
 
   cv::VideoCapture camera;
   cv::Mat image;

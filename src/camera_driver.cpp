@@ -4,6 +4,7 @@ CameraDriver::CameraDriver(int camera_index):camera_index(camera_index),camera(c
 {
     nh.param<int>("camera_index", camera_index, DEFAULT_CAMERA_INDEX);
     nh.param<int>("fps", fps, DEFAULT_FPS);
+    nh.param<bool>("upside_down", upside_down, upside_down);
 
     if(!camera.isOpened())
     {
@@ -32,10 +33,13 @@ void CameraDriver::capture()
     ros::Time now = ros::Time::now();
     if ( ( now - last ) >= period )
     {
-//        cv::flip(frame->image,frame->image,-1);//if your camera is upside down
+        if(upside_down)
+        {
+            cv::flip(frame->image,frame->image,-1);//if your camera is upside down, then flip the images
+        }
         frame->header.stamp = now;
         pub_image_raw.publish( frame->toImageMsg() );//publish image topic
-        last = now;
+        last = now;//set current time mark
     }
 }
 
