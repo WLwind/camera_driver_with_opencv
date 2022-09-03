@@ -10,28 +10,13 @@
   <arg name="fps" default="30.0"/>
   <!-- Camera index. -->
   <arg name="camera_index" default="0"/>
-  <!-- View camera stream. -->
-  <arg name="view" default="false"/>
-  <!-- Save camera stream. -->
-  <arg name="save" default="false"/>
   <!-- Camera upside down. -->
   <arg name="upside_down" default="false"/>
 
   <!-- Run driver -->
-  <node name="camera_driver" pkg="camera_driver_with_opencv" type="camera_polling_node" output="screen">
+  <node name="camera_driver" pkg="camera_driver_with_opencv" type="camera_node" output="screen">
     <param name="fps" value="$(arg fps)"/>
     <param name="camera_index" value="$(arg camera_index)"/>
     <param name="upside_down" value="$(arg upside_down)"/>
   </node>
-
-  <group if="$(arg view)">
-    <node name="view" pkg="image_view" type="image_view">
-      <remap from="image" to="/camera/image_raw"/>
-    </node>
-  </group>
-
-  <group if="$(arg save)">
-    <node name="record" pkg="rosbag" type="record" args="/camera/image"/>
-  </group>
 </launch>
-

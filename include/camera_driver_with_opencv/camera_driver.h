@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdlib.h>
+#include <memory>
 #include <ros/ros.h>
 #include <image_transport/image_transport.h>
 #include <cv_bridge/cv_bridge.h>
@@ -12,7 +13,7 @@
 */
 //for OpenCV3
 #include <opencv2/core.hpp>
-#include <opencv/highgui.h>
+#include <opencv2/highgui.hpp>
 #include <opencv2/opencv.hpp>
 
 class CameraDriver
@@ -24,23 +25,24 @@ public:
     DEFAULT_FPS = 30//default fps
   };
 
-  CameraDriver(int camera_index = DEFAULT_CAMERA_INDEX);
+  CameraDriver(ros::NodeHandle& nh, int camera_index = DEFAULT_CAMERA_INDEX);
   ~CameraDriver();
   void capture();//capture the image by polling
-  void setFps(int);//set fps
+  void setFps(double fps);//set fps
+  double getFps() const;
 
 private:
-  ros::NodeHandle nh{"~"};
-  image_transport::ImageTransport it{nh};
-  image_transport::Publisher pub_image_raw{it.advertise("image_raw", 1)};
+  ros::NodeHandle& nh_;
+  image_transport::ImageTransport it {nh_};
+  image_transport::Publisher pub_image_raw {it.advertise("image", 1)};
 
-  int camera_index{0};
-  int fps{30};
-  bool upside_down{false};//whether your camera is set upside down
+  int camera_index {0};
+  double fps {30.0};
+  bool upside_down {false};//whether your camera is set upside down
 
   cv::VideoCapture camera;
   cv::Mat image;
-  cv_bridge::CvImagePtr frame{boost::make_shared<cv_bridge::CvImage>()};
+  cv_bridge::CvImagePtr frame {boost::make_shared<cv_bridge::CvImage>()};
 
   ros::Time last{0};
   ros::Duration period{ros::Duration(1.0/fps)};

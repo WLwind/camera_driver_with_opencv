@@ -3,7 +3,10 @@
 int main(int argc, char* argv[])
 {
     ros::init(argc, argv, "camera_driver_with_opencv");
-    CameraDriver camera_driver;
+    ros::NodeHandle nh("~");
+    int camera_index;
+    nh.param<int>("camera_index", camera_index, 0);
+    CameraDriver camera_driver(nh, camera_index);
     if(argc>1)
     {
         camera_driver.setFps(atoi(argv[1]));
