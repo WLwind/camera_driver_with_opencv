@@ -41,7 +41,6 @@ private:
   bool upside_down {false};//whether your camera is set upside down
 
   cv::VideoCapture camera;
-  cv::Mat image;
   cv_bridge::CvImagePtr frame {boost::make_shared<cv_bridge::CvImage>()};
 
   ros::Time last{0};
